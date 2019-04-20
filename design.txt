@@ -1,0 +1,1 @@
+MacMiner, miner life simulator
