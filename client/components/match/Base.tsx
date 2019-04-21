@@ -1,6 +1,6 @@
 import * as React from 'react'
 import AppStyles from '../../AppStyles';
-import { TopBar, Button } from '../Shared'
+import { TopBar, Button, LightButton } from '../Shared'
 import { onMatchTick } from '../uiManager/Thunks'
 
 interface Props {
@@ -32,22 +32,29 @@ export default class Match extends React.Component<Props> {
         return (
             <div style={AppStyles.window}>
                 <div>
-                    coin exchange goes here
+                    <h4>CoinEx</h4>
+                    {this.props.me.wallet.map(coin=>
+                        <div style={{display:'flex'}}>
+                            <div style={{fontFamily:'Rune'}}>{coin.rune}</div>
+                            {coin.name}
+                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
+                        </div>
+                    )}
                 </div>
                 <div>
                     building options or selected building info here
                 </div>
-                <div style={{padding:'0.5em', maxWidth:'25em'}}>
+                <div style={{padding:'0.5em', maxWidth:'25em', display:'flex', justifyContent:'center'}}>
                     {this.props.me.base.map(row=>
                         <div>
                             {row.map((baseTile:BaseTile)=>
                                 baseTile.buildingId ? 
                                     <div onClick={()=>this.showBuildingInfo(baseTile.buildingId)} 
                                          style={this.getBuldingStyle(baseTile.buildingId)} 
-                                         className='bg-tile000'/> :
+                                    /> :
                                     <div onClick={this.state.placingBuilding ? 
                                             ()=>this.placeBuilding(baseTile) : ()=>this.showBuildOptions()} 
-                                         style={styles.emptyBaseTile} className='bg-tile001'/>
+                                         style={styles.emptyBaseTile}/>
                             )}
                         </div>
                     )}
@@ -59,6 +66,11 @@ export default class Match extends React.Component<Props> {
 
 const styles = {
     emptyBaseTile: {
-        
+        backgroundImage: 'url('+require('../../assets/pipes/tile035.png')+')',
+        backgroundRepeat: 'no-repeat',
+        height:'1.5em',
+        width:'1.5em',
+        margin:'2px',
+        border: '1px dotted'
     }
 }

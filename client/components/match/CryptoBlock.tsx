@@ -49,6 +49,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
                 <div style={{...styles.tileInfo}}>
                     <div style={styles.infoInner}>
                         info
+                        {LightButton(true, this.props.onShowBase, 'Home')}
                     </div>
                 </div>
                 <div style={{position:'relative'}}>
@@ -61,8 +62,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
                                             onClick={tile.isMined ? null : ()=>this.mineBlock(tile)}
                                             style={{
                                                 ...styles.tile, 
-                                                background: tile.isMined ? 'bg-tile001' : '.bg-tile000',
-                                                borderStyle: tile.isMined ? 'bg-tile002' : 'bg-tile003',
+                                                ...(tile.isMined ? styles.minedTile : {})
                                                 }}>
                                             {tile.hadFragment && <div style={styles.fragment}/>}
                                         </div>
@@ -103,13 +103,17 @@ const styles = {
         borderRadius:'5px'
     },
     tile: {
-        width: '6em',
-        height:'2em',
+        width: '32px',
+        height:'32px',
         border: '1px',
         position:'relative' as 'relative',
         display:'flex',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
+        backgroundImage: 'url('+require('../../assets/pipes/tile026.png')+')'
+    },
+    minedTile: {
+        backgroundImage: 'url('+require('../../assets/pipes/tile004.png')+')'
     },
     tileInner: {
         background: 'white',
