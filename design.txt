@@ -1,1 +1,7 @@
 MacMiner, miner life simulator
+
+2 views:
+
+Base - 3x3 starting where you can build things
+Cryptospace - 50x50 block where you mine a coin type or discover new coins and other treasures. 
+              Block mining tools strength is determined by your base buildings.

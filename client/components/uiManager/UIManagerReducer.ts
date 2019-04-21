@@ -18,8 +18,7 @@ export default appReducer;
 const getInitialState = () => {
     return {
         activeSession: {
-            players: new Array<Player>(),
-            board: new Array<Array<Tile>>()
+            players: new Array<Player>()
         },
         currentUser: {
             

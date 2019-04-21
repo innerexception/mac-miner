@@ -2,6 +2,7 @@ import * as React from 'react';
 import { onMatchStart } from './uiManager/Thunks'
 import AppStyles from '../AppStyles';
 import { Button, TopBar } from './Shared'
+import { getRandomInt, getRandomCoinName, getRandomCoinRune, getFreshCoinBlock } from './Util';
 
 export default class Login extends React.Component {
     render(){
@@ -20,9 +21,33 @@ export default class Login extends React.Component {
 const getUser = () => {
    return {
        id: Date.now() + ''+ Math.random(),
-       assets: new Array<Building>(),
+       base: getEmptyBase(),
        power: 0,
-       coins: new Array<Coin>(),
+       wallet: getInitialCoin(),
        passives: new Array<Passive>()
     }
 }
+
+const getInitialCoin = () => {
+    let amount = getRandomInt(1000)
+    let value = Math.round(amount / 100)
+    return [{
+        name: getRandomCoinName(),
+        rune: getRandomCoinRune(),
+        value,
+        difficulty: 1,
+        circulation: amount*getRandomInt(20),
+        amount,
+        activeBlock: getFreshCoinBlock()
+    }]
+}
+
+const getEmptyBase = () => 
+    new Array(3).fill(null).map((row, i) => new Array(3).fill(null).map((baseTile, j) => {
+        return {
+            x:i,
+            y:j,
+            id: Date.now()+''+Math.random(),
+            buildingId: ''
+        }
+    }))

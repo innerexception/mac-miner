@@ -6,12 +6,7 @@ export const onMatchStart = (currentUser:Player) => {
         type: ReducerActions.MATCH_TICK,
         action: {
             session: {
-                players: [currentUser],
-                board: new Array(8).fill(null).map(row=>new Array(8).fill(null).map(tile=>{
-                    return {
-                        id: Date.now()+''+Math.random()
-                    }
-                }))
+                players: [currentUser]
             }
         }
     })
@@ -50,7 +45,7 @@ export const onBuyCoin = (coin:Coin) => {
     //TODO: value increases
 }
 
-export const onClearTile = (tile:Tile) => {
+export const onClearTile = (tile:CryptoTile) => {
     //TODO: chance to discover new coin (trigger ICO)
     //TODO: clearing requires equipment in some cases
     //TODO: can only build on cleared tiles

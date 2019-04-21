@@ -5,17 +5,17 @@ import { Button, LightButton } from '../Shared'
 import { TileState, MatchStatus } from '../../../enum'
 
 interface Props {
-    activeSession: Session
     me: Player
-    players: Array<Player>
-    board: Array<Array<Tile>>
+    block: Array<Array<CryptoTile>>
+    coin: Coin
+    onShowBase: Function
 }
 
 interface State {
     showMessage: string
 }
 
-export default class Board extends React.Component<Props, State> {
+export default class CryptoBlock extends React.Component<Props, State> {
 
     state = {
         showMessage: ''
@@ -35,11 +35,11 @@ export default class Board extends React.Component<Props, State> {
             )
     }
 
-    getTileClickHandler = (tile:Tile) => {
-        
+    mineBlock = (tile:CryptoTile) => {
+
     }
 
-    getTileBackground = (tile:Tile) => {
+    getTileBackground = (tile:CryptoTile) => {
         
     }
 
@@ -54,16 +54,17 @@ export default class Board extends React.Component<Props, State> {
                 <div style={{position:'relative'}}>
                     <div style={styles.mapFrame}>
                         <div style={{display:'flex'}}>
-                            {this.props.board.map((row) => 
+                            {this.props.block.map((row) => 
                                 <div>
-                                    {row.map((tile:Tile) => 
-                                         <div style={{
+                                    {row.map((tile:CryptoTile) => 
+                                         <div 
+                                            onClick={tile.isMined ? null : ()=>this.mineBlock(tile)}
+                                            style={{
                                                 ...styles.tile, 
-                                                background: this.getTileBackground(tile),
-                                                borderStyle: this.isSelected(tile) ? 'solid' : 'dotted',
-                                                }} 
-                                            onClick={this.getTileClickHandler(tile)}>
-                                            <div>{this.getBuildingOfTile(tile)}</div>    
+                                                background: tile.isMined ? 'white' : 'black',
+                                                borderStyle: tile.isMined ? 'solid' : 'dotted',
+                                                }}>
+                                            {tile.hadFragment && <div style={styles.fragment}/>}
                                         </div>
                                     )}
                                 </div>
@@ -124,5 +125,8 @@ const styles = {
         borderRadius: '5px',
         textAlign: 'center' as 'center',
         margin: '5px'
+    },
+    fragment: {
+        
     }
 }
