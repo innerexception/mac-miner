@@ -61,8 +61,8 @@ export default class CryptoBlock extends React.Component<Props, State> {
                                             onClick={tile.isMined ? null : ()=>this.mineBlock(tile)}
                                             style={{
                                                 ...styles.tile, 
-                                                background: tile.isMined ? 'white' : 'black',
-                                                borderStyle: tile.isMined ? 'solid' : 'dotted',
+                                                background: tile.isMined ? 'bg-tile001' : '.bg-tile000',
+                                                borderStyle: tile.isMined ? 'bg-tile002' : 'bg-tile003',
                                                 }}>
                                             {tile.hadFragment && <div style={styles.fragment}/>}
                                         </div>

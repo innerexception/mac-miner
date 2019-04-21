@@ -3,12 +3,11 @@ import { ReducerActions } from '../../../enum'
 
 export const onMatchStart = (currentUser:Player) => {
     dispatch({
-        type: ReducerActions.MATCH_TICK,
-        action: {
-            session: {
-                players: [currentUser]
-            }
-        }
+        type: ReducerActions.SET_USER,
+        session: {
+            players: [currentUser]
+        },
+        currentUser
     })
 }
 
@@ -48,7 +47,6 @@ export const onBuyCoin = (coin:Coin) => {
 export const onClearTile = (tile:CryptoTile) => {
     //TODO: chance to discover new coin (trigger ICO)
     //TODO: clearing requires equipment in some cases
-    //TODO: can only build on cleared tiles
     //TODO: tile may have affinity for a coin type
 }
 

@@ -2,6 +2,8 @@ import * as React from 'react'
 import AppStyles from '../../AppStyles';
 import { TopBar, Button } from '../Shared'
 import { onMatchTick } from '../uiManager/Thunks'
+import '../../assets/pipe-sprites.css'
+import '../../assets/tiles-sprites.css'
 
 interface Props {
     onShowBlockForCoin: Function
@@ -31,7 +33,6 @@ export default class Match extends React.Component<Props> {
     render(){
         return (
             <div style={AppStyles.window}>
-                {TopBar('MacMiner')}
                 <div>
                     coin exchange goes here
                 </div>
@@ -44,10 +45,11 @@ export default class Match extends React.Component<Props> {
                             {row.map((baseTile:BaseTile)=>
                                 baseTile.buildingId ? 
                                     <div onClick={()=>this.showBuildingInfo(baseTile.buildingId)} 
-                                         style={this.getBuldingStyle(baseTile.buildingId)}/> :
+                                         style={this.getBuldingStyle(baseTile.buildingId)} 
+                                         className='bg-tile000'/> :
                                     <div onClick={this.state.placingBuilding ? 
                                             ()=>this.placeBuilding(baseTile) : ()=>this.showBuildOptions()} 
-                                         style={styles.emptyBaseTile}/>
+                                         style={styles.emptyBaseTile} className='bg-tile001'/>
                             )}
                         </div>
                     )}

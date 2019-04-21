@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "outDir": "./build/",
-        "sourceMap": false,
+        "sourceMap": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
         "strictNullChecks": false,

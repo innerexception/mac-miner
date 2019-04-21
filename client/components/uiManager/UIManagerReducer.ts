@@ -5,7 +5,7 @@ const appReducer = (state = getInitialState(), action:any) => {
         case ReducerActions.MATCH_TICK: 
             return { ...state, activeSession: action.session }
         case ReducerActions.SET_USER: 
-            return { ...state, currentUser: action.currentUser }
+            return { ...state, currentUser: action.currentUser, activeSession: action.session }
         case ReducerActions.MATCH_CLEANUP: 
             return { ...state, activeSession: null, currentUser:null}
         default:

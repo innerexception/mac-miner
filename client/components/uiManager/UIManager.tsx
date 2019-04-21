@@ -31,7 +31,7 @@ const styles = {
     frame: {
         height: '100vh',
         display:'flex', justifyContent:'center', alignItems:'center',
-        backgroundImage: 'url('+require('../../assets/tiny.png')+')',
+        backgroundImage: 'url('+require('../../assets/grayTile.png')+')',
         backgroundRepeat: 'repeat'
     },
     dot: {
