@@ -2,8 +2,6 @@ import * as React from 'react'
 import AppStyles from '../../AppStyles';
 import { TopBar, Button } from '../Shared'
 import { onMatchTick } from '../uiManager/Thunks'
-import '../../assets/pipe-sprites.css'
-import '../../assets/tiles-sprites.css'
 
 interface Props {
     onShowBlockForCoin: Function
