@@ -1,12 +1,11 @@
 import * as React from 'react'
-import { } from '../uiManager/Thunks'
+import { onMineBlock } from '../uiManager/Thunks'
 import AppStyles from '../../AppStyles';
 import { Button, LightButton } from '../Shared'
 import { TileState, MatchStatus } from '../../../enum'
 
 interface Props {
     me: Player
-    block: Array<Array<CryptoTile>>
     coin: Coin
     onShowBase: Function
 }
@@ -36,7 +35,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
     }
 
     mineBlock = (tile:CryptoTile) => {
-
+        onMineBlock(tile, this.props.coin, this.props.me)
     }
 
     getTileBackground = (tile:CryptoTile) => {
@@ -55,7 +54,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
                 <div style={{position:'relative'}}>
                     <div style={styles.mapFrame}>
                         <div style={{display:'flex'}}>
-                            {this.props.block.map((row) => 
+                            {this.props.coin.activeBlock.map((row) => 
                                 <div>
                                     {row.map((tile:CryptoTile) => 
                                          <div 
@@ -110,10 +109,12 @@ const styles = {
         display:'flex',
         alignItems:'center',
         justifyContent:'center',
-        backgroundImage: 'url('+require('../../assets/pipes/tile026.png')+')'
+        backgroundImage: 'url('+require('../../assets/pipes/tile026.png')+')',
+        cursor:'pointer'
     },
     minedTile: {
-        backgroundImage: 'url('+require('../../assets/pipes/tile004.png')+')'
+        backgroundImage: 'url('+require('../../assets/pipes/tile004.png')+')',
+        cursor:'none'
     },
     tileInner: {
         background: 'white',

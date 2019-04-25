@@ -1,14 +1,18 @@
+import { CoinRune, CoinName } from "../../enum";
+
 export const getRandomInt = (max:number) => Math.floor(Math.random() * Math.floor(max))
 
-export const getRandomCoinName = () => 'TODO'
+export const getRandomCoinName = () => CoinName[getRandomInt(CoinName.length-1)]+CoinName[getRandomInt(CoinName.length-1)]+CoinName[getRandomInt(CoinName.length-1)]
 
-export const getRandomCoinRune = () => 'TODO'
+export const getRandomCoinRune = () => CoinRune[getRandomInt(CoinRune.length-1)]
 
-export const getFreshCoinBlock = () => new Array(25).fill(null).map(row=>new Array(25).fill(null).map(tile=>{
+export const getFreshCoinBlock = () => new Array(25).fill(null).map((row,x)=>new Array(25).fill(null).map((tile,y)=>{
     return {
         id: Date.now()+''+Math.random(),
         isMined: false,
-        hadFragment: false
+        hadFragment: false,
+        x,
+        y
     }
 }))
 

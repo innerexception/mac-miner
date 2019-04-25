@@ -38,7 +38,8 @@ const getInitialCoin = () => {
         difficulty: 1,
         circulation: amount*getRandomInt(20),
         amount,
-        activeBlock: getFreshCoinBlock()
+        activeBlock: getFreshCoinBlock(),
+        currentFragments: 0
     }]
 }
 

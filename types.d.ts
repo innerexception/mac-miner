@@ -32,6 +32,7 @@ interface Coin {
     circulation: number
     amount: number
     activeBlock: Array<Array<CryptoTile>>
+    currentFragments: number
 }
 
 interface Passive {
@@ -60,6 +61,8 @@ interface CryptoTile {
     id: string
     isMined: boolean
     hadFragment: boolean
+    x:number
+    y:number
 }
 
 interface Session {

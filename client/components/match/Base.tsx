@@ -33,10 +33,19 @@ export default class Match extends React.Component<Props> {
             <div style={AppStyles.window}>
                 <div>
                     <h4>CoinEx</h4>
+                    <div style={{display:'flex'}}>
+                        <div>Symbol</div>
+                        <div>Amt</div>
+                        <div>Val</div>
+                    </div>
                     {this.props.me.wallet.map(coin=>
                         <div style={{display:'flex'}}>
-                            <div style={{fontFamily:'Rune'}}>{coin.rune}</div>
+                            <div style={{fontFamily:'Coin'}}>{coin.rune}</div>
                             {coin.name}
+                            {coin.amount}
+                            {coin.value}
+                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Buy')}
+                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Sell')}
                             {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
                         </div>
                     )}

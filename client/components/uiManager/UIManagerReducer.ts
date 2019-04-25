@@ -8,6 +8,12 @@ const appReducer = (state = getInitialState(), action:any) => {
             return { ...state, currentUser: action.currentUser, activeSession: action.session }
         case ReducerActions.MATCH_CLEANUP: 
             return { ...state, activeSession: null, currentUser:null}
+        case ReducerActions.PLAYER_UPDATE: 
+            let players = state.activeSession.players.map(player=>{
+                if(player.id===action.player.id) return action.player
+                else return player
+            })
+            return { ...state, activeSession: {...state.activeSession, players}}
         default:
             return state
     }
