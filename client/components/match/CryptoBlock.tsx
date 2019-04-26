@@ -8,6 +8,7 @@ interface Props {
     me: Player
     coin: Coin
     onShowBase: Function
+    activeSession: Session
 }
 
 interface State {
@@ -35,7 +36,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
     }
 
     mineBlock = (tile:CryptoTile) => {
-        onMineBlock(tile, this.props.coin, this.props.me)
+        onMineBlock(tile.x, tile.y, this.props.coin, this.props.me, this.props.activeSession)
     }
 
     getTileBackground = (tile:CryptoTile) => {

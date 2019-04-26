@@ -1,26 +1,26 @@
 import * as React from 'react'
 import AppStyles from '../../AppStyles';
 import { TopBar, Button, LightButton } from '../Shared'
-import { onMatchTick } from '../uiManager/Thunks'
 
 interface Props {
     onShowBlockForCoin: Function
+    coins: Array<Coin>
     me: Player
 }
 
 export default class Match extends React.Component<Props> {
 
-    state = { placingBuilding: false }
+    state = { placingEquipment: false }
 
-    showBuildingInfo = (buildingId:string) => {
+    showEquipmentInfo = (equipment:Equipment) => {
 
     }
 
-    getBuldingStyle = (buildingId:string) => {
+    getEquipmentStyle = (equipment:Equipment) => {
         return styles.emptyBaseTile
     }
 
-    placeBuilding = (tile:BaseTile) => {
+    placeEquipment = (tile:RackTile) => {
 
     }
 
@@ -38,34 +38,33 @@ export default class Match extends React.Component<Props> {
                         <div>Amt</div>
                         <div>Val</div>
                     </div>
-                    {this.props.me.wallet.map(coin=>
-                        <div style={{display:'flex'}}>
-                            <div style={{fontFamily:'Coin'}}>{coin.rune}</div>
-                            {coin.name}
-                            {coin.amount}
-                            {coin.value}
-                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Buy')}
-                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Sell')}
-                            {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
-                        </div>
-                    )}
+                    {this.props.me.wallet.map(coinHolding=>{
+                        let coin = this.props.coins.find(coin=>coin.name===coinHolding.name)
+                        return (
+                            <div style={{display:'flex'}}>
+                                <div style={{fontFamily:'Coin'}}>{coin.rune}</div>
+                                {coin.name}
+                                {coinHolding.amount}
+                                {coin.value}
+                                {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Buy')}
+                                {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Sell')}
+                                {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
+                            </div>
+                        )
+                    })}
                 </div>
                 <div>
                     building options or selected building info here
                 </div>
                 <div style={{padding:'0.5em', maxWidth:'25em', display:'flex', justifyContent:'center'}}>
-                    {this.props.me.base.map(row=>
-                        <div>
-                            {row.map((baseTile:BaseTile)=>
-                                baseTile.buildingId ? 
-                                    <div onClick={()=>this.showBuildingInfo(baseTile.buildingId)} 
-                                         style={this.getBuldingStyle(baseTile.buildingId)} 
+                    {this.props.me.rack.map((rackTile:RackTile)=>
+                                rackTile.equipment ? 
+                                    <div onClick={()=>this.showEquipmentInfo(rackTile.equipment)} 
+                                         style={this.getEquipmentStyle(rackTile.equipment)} 
                                     /> :
-                                    <div onClick={this.state.placingBuilding ? 
-                                            ()=>this.placeBuilding(baseTile) : ()=>this.showBuildOptions()} 
+                                    <div onClick={this.state.placingEquipment ? 
+                                            ()=>this.placeEquipment(rackTile) : ()=>this.showBuildOptions()} 
                                          style={styles.emptyBaseTile}/>
-                            )}
-                        </div>
                     )}
                 </div>
          </div>

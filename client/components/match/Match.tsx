@@ -27,12 +27,14 @@ export default class Match extends React.Component<Props> {
                     {this.state.activeView === 'base' ? 
                         <Base 
                             onShowBlockForCoin={(activeCoin:Coin)=>this.setState({activeView:'block', activeCoinName:activeCoin.name})}
+                            coins={this.props.activeSession.coins}
                             me={this.props.activeSession.players.find(player=>player.id===this.props.currentUser.id)}
                         />
                         :
                         <CryptoBlock 
-                            coin={this.props.currentUser.wallet.find(coin=>coin.name===this.state.activeCoinName)}
+                            coin={this.props.activeSession.coins.find(coin=>coin.name===this.state.activeCoinName)}
                             me={this.props.activeSession.players.find(player=>player.id===this.props.currentUser.id)}
+                            activeSession={this.props.activeSession}
                             onShowBase={()=>this.setState({activeView:'base'})}
                         />
                     }

@@ -1,4 +1,4 @@
-declare enum BuildingType {
+declare enum EquipmentType {
     Pipe='Pipe',
     Miner1='Miner1',
     Storage1='Storage1',
@@ -18,10 +18,16 @@ declare enum PassiveType {
 
 interface Player {
     id:string
-    base: Array<Array<BaseTile>>
+    rack: Array<RackTile>
     power: number
-    wallet: Array<Coin>
+    wallet: Array<CoinHolding>
     passives: Array<Passive>
+}
+
+interface CoinHolding {
+    name: string
+    amount: number
+    currentFragments: number
 }
 
 interface Coin { 
@@ -30,9 +36,7 @@ interface Coin {
     value: number
     difficulty: number
     circulation: number
-    amount: number
     activeBlock: Array<Array<CryptoTile>>
-    currentFragments: number
 }
 
 interface Passive {
@@ -40,21 +44,20 @@ interface Passive {
     type: PassiveType
 }
 
-interface Building {
-    playerId: string
-    tileId: string
+interface Equipment {
     powerCost: number
+    isEnabled: boolean
     buildCost: number
     sprite: string
-    type: BuildingType
+    type: EquipmentType
     name:string
+    coinName: string
+    level: number
 }
 
-interface BaseTile {
+interface RackTile {
     id: string
-    buildingId: string
-    x: number
-    y: number
+    equipment: Equipment
 }
 
 interface CryptoTile {
@@ -67,6 +70,7 @@ interface CryptoTile {
 
 interface Session {
     players: Array<Player>
+    coins: Array<Coin>
 }
 
 interface RState {

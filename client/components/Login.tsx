@@ -21,7 +21,7 @@ export default class Login extends React.Component {
 const getUser = () => {
    return {
        id: Date.now() + ''+ Math.random(),
-       base: getEmptyBase(),
+       rack: getEmptyRack(),
        power: 0,
        wallet: getInitialCoin(),
        passives: new Array<Passive>()
@@ -43,12 +43,10 @@ const getInitialCoin = () => {
     }]
 }
 
-const getEmptyBase = () => 
-    new Array(3).fill(null).map((row, i) => new Array(3).fill(null).map((baseTile, j) => {
+const getEmptyRack = () => 
+    new Array(3).fill(null).map(rackTile => {
         return {
-            x:i,
-            y:j,
             id: Date.now()+''+Math.random(),
-            buildingId: ''
+            equipment: null
         }
-    }))
+    })

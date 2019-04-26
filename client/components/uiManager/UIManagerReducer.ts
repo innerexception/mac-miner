@@ -14,6 +14,12 @@ const appReducer = (state = getInitialState(), action:any) => {
                 else return player
             })
             return { ...state, activeSession: {...state.activeSession, players}}
+        case ReducerActions.PLAYER_MINED: 
+            let coins = state.activeSession.coins.map(coin => {
+                if(coin.name === action.coin.name) return {...action.coin}
+                else return coin
+            })
+            return { ...state, activeSession: {...state.activeSession, players: action.players, coins}}
         default:
             return state
     }
@@ -24,7 +30,8 @@ export default appReducer;
 const getInitialState = () => {
     return {
         activeSession: {
-            players: new Array<Player>()
+            players: new Array<Player>(),
+            coins: new Array<Coin>()
         },
         currentUser: {
             

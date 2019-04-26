@@ -1,6 +1,6 @@
 import { dispatch } from '../../../client/App'
 import { ReducerActions } from '../../../enum'
-import { getFreshCoinBlock } from '../Util';
+import { getFreshCoinBlock, getRandomInt } from '../Util';
 
 export const onMatchStart = (currentUser:Player) => {
     dispatch({
@@ -10,46 +10,128 @@ export const onMatchStart = (currentUser:Player) => {
         },
         currentUser
     })
+    //TODO: add AI miners here
 }
 
-export const onMineBlock = (tile:CryptoTile, coin:Coin, miner:Player) => {
-    miner.wallet = miner.wallet.map(thisCoin=>{
-        if(thisCoin.name===coin.name){
-            thisCoin.currentFragments+=0.1
-            tile.isMined = true
-            if(thisCoin.currentFragments >= 1){
-                //Close out the block
-                thisCoin.amount++
-                thisCoin.circulation++
-                thisCoin.difficulty++
-                thisCoin.currentFragments = 0
-                thisCoin.activeBlock = getFreshCoinBlock()
-            }
-            else 
-                thisCoin.activeBlock[tile.x][tile.y] = {...tile}
-            return {...thisCoin}
-        }
-        else
-            return thisCoin
-    })
+export const onMineBlock = (x:number, y:number, gcoin:Coin, miner:Player, session:Session) => {
+    let holding = miner.wallet.find(holding=>holding.name === coin.name)
+    let { coin, players } = mineCoin(x,y,miner.id,holding,gcoin,session.players)
 
     dispatch({
-        type: ReducerActions.PLAYER_UPDATE,
-        player:miner
+        type: ReducerActions.PLAYER_MINED,
+        players,
+        coin
     })
 }
 
 export const onMatchTick = (session:Session) => {
     //TODO
-    //1. subtract power req of connected buildings and set power status
-    //2. if power status low, disable enough buildings so that it is not
-    //3. check coin market and adjust for value and difficulty
-    //4. check miner outputs for each powered coin miner and record progress or produce a coin
     //5. check for global event trigger
-    //6. check if AI miners have closed out a block, perform mining for them
+    
+    let outPlayers, outCoins
+    session.players.forEach(player=>{
+        let { players, coins } = runTurn(player, session.coins, session.players)
+        outPlayers = players
+        outCoins = coins
+    })
+
+    dispatch({
+        type: ReducerActions.MATCH_TICK,
+        session: {
+            ...session,
+            players: outPlayers,
+            coins: outCoins
+        }
+    })
 }
 
-export const onPurchaseBuilding = (building:Building) => {
+const runTurn = (player:Player, coins:Array<Coin>, splayers:Array<Player>) => {
+    let outPlayers = splayers
+    let outCoins = coins
+    player.wallet.forEach(pcoin=>{
+        const miners = player.rack.filter(rackSpace=>
+                rackSpace.equipment&&
+                rackSpace.equipment.coinName === pcoin.name&&
+                rackSpace.equipment.isEnabled).map(space=>space.equipment)
+        const gcoin = coins.find(gcoin=>pcoin.name === gcoin.name)
+        let { coin, players } = mineCoin(getRandomInt(gcoin.activeBlock.length), getRandomInt(gcoin.activeBlock[0].length), player.id, pcoin, gcoin, splayers, miners)
+        outPlayers = players
+        outCoins = coins.map(ocoin=>{
+            if(ocoin.name === coin.name) return {...coin}
+            else return ocoin
+        })
+    })
+
+    let reqPower=0
+    player.rack.forEach(rackSpace=>reqPower+=rackSpace.equipment ? rackSpace.equipment.powerCost : 0)
+    player.power-=reqPower
+    if(player.power < 0){
+        player.rack.forEach(rackSpace=>{
+            if(rackSpace.equipment && player.power < 0){
+                rackSpace.equipment.isEnabled = false
+                player.power+= rackSpace.equipment.powerCost
+            } 
+        })
+    }
+    
+    outPlayers = outPlayers.map(oplayer=>{
+        if(oplayer.id===player.id)
+            return {...player}
+        else return oplayer
+    })
+
+    return {
+        players: outPlayers,
+        coins: outCoins
+    }
+}
+
+const mineCoin = (x:number, y:number, playerId:string, holding:CoinHolding, coin:Coin, players:Array<Player>, miningEquipment?:Array<Equipment>) => {
+    
+    let tile = coin.activeBlock[x][y]
+    if(!tile.isMined){
+        if(miningEquipment){
+            miningEquipment.forEach(equipment=>{
+                holding.currentFragments += (equipment.level / coin.difficulty)/10
+            })
+        }
+        else
+            holding.currentFragments+=0.1
+        tile.isMined = true
+        if(holding.currentFragments >= 1){
+            //Close out the block
+            holding.amount++
+            coin.circulation++
+            coin.difficulty++
+            players.forEach(player=>
+                player.wallet.forEach(coinHolding=>{
+                    if(coinHolding.name === holding.name) coinHolding.currentFragments = 0;
+                }))
+            coin.activeBlock = getFreshCoinBlock()
+        }
+        else 
+            coin.activeBlock[x][y] = {...tile}
+    }
+
+    players = players.map(player=>{
+        if(player.id === playerId) {
+            return {
+                ...player, 
+                wallet: player.wallet.map(pholding=>{
+                            if(pholding.name===holding.name) return {...holding}
+                            else return pholding
+                        })
+            }
+        }
+        return player
+    })
+
+    return {
+        coin, players
+    }
+}
+
+export const onPurchaseEquipment = (equipment:Equipment) => {
 
 }
 
@@ -57,7 +139,7 @@ export const onPurchasePower = (kw:number) => {
 
 }
 
-export const onPlaceBuilding = (building:Building) => {
+export const onPlaceEquipment = (equipment:Equipment) => {
 
 }
 
