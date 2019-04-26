@@ -3,6 +3,7 @@ import { onMineBlock } from '../uiManager/Thunks'
 import AppStyles from '../../AppStyles';
 import { Button, LightButton } from '../Shared'
 import { TileState, MatchStatus } from '../../../enum'
+import Set from './Set'
 
 interface Props {
     me: Player
@@ -12,27 +13,35 @@ interface Props {
 }
 
 interface State {
-    showMessage: string
+    showMessage: string,
+    showSetForTile: CryptoTile | null
 }
 
 export default class CryptoBlock extends React.Component<Props, State> {
 
     state = {
-        showMessage: ''
+        showMessage: '',
+        showSetForTile: null as null
     }
 
-    getNotification = () => {
-        if(this.state.showMessage)
-            return (
-                <div style={{...styles.disabled, display: 'flex'}}>
-                    <div style={AppStyles.notification}>
-                        <div style={{marginBottom:'0.5em', whiteSpace:'pre-wrap'}}>
-                            {this.state.showMessage}
-                        </div>
-                        {Button(true, ()=>this.setState({showMessage:''}), 'Done')}
-                    </div>
+    getNotification = () => 
+        <div style={{...styles.disabled, display: 'flex'}}>
+            <div style={AppStyles.notification}>
+                <div style={{marginBottom:'0.5em', whiteSpace:'pre-wrap'}}>
+                    {this.state.showMessage}
                 </div>
-            )
+                {Button(true, ()=>this.setState({showMessage:''}), 'Done')}
+            </div>
+        </div>  
+
+    getSetForTile = () => {
+        //TODO: 
+        //set field size and # of sets increases with difficulty
+        //base is 3x3 with 1 set, scaled by difficulty
+        //set categories: color, texture, shape, number
+        <Set sets={3+this.props.coin.difficulty}
+             onSolved={()=>this.mineBlock(this.state.showSetForTile)}
+             dimension={3+this.props.coin.difficulty}/>
     }
 
     mineBlock = (tile:CryptoTile) => {
@@ -59,7 +68,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
                                 <div>
                                     {row.map((tile:CryptoTile) => 
                                          <div 
-                                            onClick={tile.isMined ? null : ()=>this.mineBlock(tile)}
+                                            onClick={tile.isMined ? null : ()=>this.setState({showSetForTile: tile})}
                                             style={{
                                                 ...styles.tile, 
                                                 ...(tile.isMined ? styles.minedTile : {})
@@ -71,7 +80,8 @@ export default class CryptoBlock extends React.Component<Props, State> {
                             )}
                         </div>
                     </div>
-                    {this.getNotification()}
+                    {this.state.showMessage && this.getNotification()}
+                    {this.state.showSetForTile && this.getSetForTile()}
                 </div>
             </div>
         )
