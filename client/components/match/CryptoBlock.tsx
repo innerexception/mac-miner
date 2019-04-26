@@ -24,6 +24,11 @@ export default class CryptoBlock extends React.Component<Props, State> {
         showSetForTile: null as null
     }
 
+    onSolved = (success:boolean) => {
+        if(success) this.mineBlock(this.state.showSetForTile)
+        this.setState({showSetForTile: null})
+    }
+
     getNotification = () => 
         <div style={{...styles.disabled, display: 'flex'}}>
             <div style={AppStyles.notification}>
@@ -40,7 +45,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
         //base is 3x3 with 1 set, scaled by difficulty
         //set categories: color, texture, shape, number
         <Set sets={3+this.props.coin.difficulty}
-             onSolved={()=>this.mineBlock(this.state.showSetForTile)}
+             onSolved={this.onSolved}
              dimension={3+this.props.coin.difficulty}/>
     }
 

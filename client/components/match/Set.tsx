@@ -45,9 +45,26 @@ export default class Set extends React.Component<Props, State> {
     }
 
     onTrySolve = () => {
-        //TODO: for this.props.sets times, go through and filter out a correct set
-        //If there are a correct number of sets, mine a block
-        //Else kick back out to home screen
+        let selected = this.state.cards.filter(card=>card.isSelected)
+        let availableCards = Array.from(selected)
+        let matches=0
+        for(var i=0; i<this.props.sets; i++){
+            selected.forEach(card=>{
+                const match = availableCards.filter(selectedCard=>
+                        selectedCard.color === card.color &&
+                        selectedCard.symbol === card.symbol && 
+                        selectedCard.number === card.number &&
+                        selectedCard.pattern === card.pattern)
+                if(match.length >= 3){
+                    //Remove found cards
+                    availableCards = availableCards.filter(selectedCard=>
+                        !match.find(mcard => selectedCard.id === mcard.id))
+                    matches++
+                }
+            })
+        }
+        if(matches===this.props.sets) this.props.onSolved(true)
+        else this.props.onSolved(false)
     }
 
     render(){
@@ -77,7 +94,7 @@ const getInitialCards = (dimension:number) => {
             isSelected: false
         }
     })
-    //TODO: set correct number of correct sets, then shuffle
+    //TODO: set correct number of correct sets for difficulty, then shuffle
 
 
     return cards
