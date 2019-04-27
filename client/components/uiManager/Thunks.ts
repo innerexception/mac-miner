@@ -103,7 +103,8 @@ const mineCoin = (x:number, y:number, playerId:string, holding:CoinHolding, coin
             })
         }
         else{
-            holding.currentFragments+=0.1
+            holding.currentFragments+=0.1 
+            holding.currentFragments = Math.round(holding.currentFragments * 100) / 100
             tile.isMined = true
         }
         if(holding.currentFragments >= 1){

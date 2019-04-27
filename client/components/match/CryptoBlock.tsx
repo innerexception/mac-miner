@@ -14,19 +14,30 @@ interface Props {
 
 interface State {
     showMessage: string,
-    showSetForTile: CryptoTile | null
+    showSetForTile: CryptoTile | null,
+    messages: Array<string>
 }
 
 export default class CryptoBlock extends React.Component<Props, State> {
 
+    messageEl:any
+
     state = {
         showMessage: '',
-        showSetForTile: null as null
+        showSetForTile: null as null,
+        messages: ['Started mining '+this.props.coin.name]
     }
 
     onSolved = (success:boolean) => {
-        if(success) this.mineBlock(this.state.showSetForTile)
-        this.setState({showSetForTile: null})
+        if(success){
+            this.mineBlock(this.state.showSetForTile)
+            this.state.messages.push('Solve block: SUCCESS!')
+        } 
+        else
+            this.state.messages.push('Solve block: FAILED!')
+
+        this.setState({showSetForTile: null, messages: this.state.messages}, 
+            ()=>this.messageEl.scrollIntoView())
     }
 
     getNotification = () => 
@@ -40,10 +51,6 @@ export default class CryptoBlock extends React.Component<Props, State> {
         </div>  
 
     getSetForTile = () => 
-        //TODO: 
-        //set field size and # of sets increases with difficulty
-        //base is 3x3 with 1 set, scaled by difficulty
-        //set categories: color, texture, shape, number
         <Set sets={this.props.coin.difficulty}
              onSolved={this.onSolved}
              dimension={2+this.props.coin.difficulty}/>
@@ -62,8 +69,19 @@ export default class CryptoBlock extends React.Component<Props, State> {
             <div>
                 <div style={{...styles.tileInfo}}>
                     <div style={styles.infoInner}>
-                        info
-                        {LightButton(true, this.props.onShowBase, 'Home')}
+                        <div style={{width:'50%'}}>
+                            <div style={{display:'flex'}}>
+                                <div style={{fontFamily:'Coin'}}>{this.props.coin.rune}</div>
+                                <div>{this.props.coin.name}</div>
+                            </div>
+                            <div>Current difficulty: {this.props.coin.difficulty}</div>
+                            <div>My fragments: {this.props.me.wallet.find(holding=>holding.name===this.props.coin.name).currentFragments}</div>
+                            {LightButton(true, this.props.onShowBase, 'Home')}
+                        </div>
+                        <div style={{height:'20vh', overflowY:'auto', width:'50%'}}>
+                            {this.state.messages.map(message=><div>{message}</div>)}
+                            <div ref={el => { this.messageEl = el }}/>
+                        </div>
                     </div>
                 </div>
                 <div style={{position:'relative'}}>
@@ -115,7 +133,8 @@ const styles = {
     infoInner: {
         padding:'0.5em',
         background:'white',
-        borderRadius:'5px'
+        borderRadius:'5px',
+        display:'flex'
     },
     tile: {
         width: '32px',

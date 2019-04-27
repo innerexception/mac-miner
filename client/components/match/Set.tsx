@@ -81,7 +81,7 @@ export default class Set extends React.Component<Props, State> {
                 }
             })
         }
-        if(matches===this.props.sets) this.props.onSolved(true)
+        if(matches>=this.props.sets) this.props.onSolved(true)
         else this.props.onSolved(false)
     }
 
