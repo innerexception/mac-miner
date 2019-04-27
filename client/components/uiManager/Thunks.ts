@@ -140,8 +140,23 @@ const mineCoin = (x:number, y:number, playerId:string, holding:CoinHolding, coin
     }
 }
 
-export const onPurchaseEquipment = (equipment:Equipment) => {
+export const onBuildEquipment = (player:Player, equipment:Equipment, rackSpace:number) => {
+    player.rack[rackSpace].equipment = equipment
+    dispatch({
+        type: ReducerActions.PLAYER_UPDATE,
+        player
+    })
+}
 
+export const onBuyPower = (player:Player, power:number, coinAmt:number, coinName:string) => {
+    player.power+=power
+    player.wallet.forEach(holding=>{
+        if(holding.name===coinName) holding.amount-=coinAmt
+    })
+    dispatch({
+        type: ReducerActions.PLAYER_UPDATE,
+        player
+    })
 }
 
 export const onPurchasePower = (kw:number) => {

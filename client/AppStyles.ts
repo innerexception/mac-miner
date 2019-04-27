@@ -65,4 +65,10 @@ export default {
         alignItems:'center', justifyContent:'center', 
         position:'absolute' as 'absolute', top:0, left:0, width:'100%', height:'100%'
     },
+    equipment: {
+        height:'1.5em', width:'1.5em',
+        backgroundRepeat:'no-repeat',
+        backgroundPosition:'center',
+        backgroundSize:'contain'
+    }
 }

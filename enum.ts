@@ -34,11 +34,10 @@ export const EquipmentSprite = {
 
 export const EmptyEquipment = {
     powerCost: 3,
-    isEnabled: false,
+    isEnabled: true,
     buildCost: 10,
     sprite: EquipmentSprite.Miner,
     type: EquipmentType.Miner,
-    name: '',
     coinName: '',
     level: 1
 }

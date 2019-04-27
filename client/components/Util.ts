@@ -14,6 +14,14 @@ export const getRandomColor = () => {
     return (AppStyles.colors as any)[color]
 }
 
+export const getTotalPower = (rack:Array<RackTile>) => {
+    let power = 0
+    rack.forEach(space=>{
+        if(space.equipment) power+=space.equipment.powerCost
+    })
+    return power
+}
+
 export const getFreshCoinBlock = () => new Array(25).fill(null).map((row,x)=>new Array(25).fill(null).map((tile,y)=>{
     return {
         id: Date.now()+''+Math.random(),

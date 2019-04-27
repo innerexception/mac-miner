@@ -1,8 +1,10 @@
 import * as React from 'react'
 import AppStyles from '../../AppStyles';
 import { TopBar, Button, LightButton } from '../Shared'
-import { onBuyCoin, onSellCoin } from '../uiManager/Thunks';
-import { EmptyEquipment, EquipmentSprite, EquipmentType } from '../../../enum';
+import { onBuyCoin, onSellCoin } from '../uiManager/Thunks'
+import EquipmentBuilder from './EquipmentBuilder'
+import PowerStore from './PowerStore'
+import { getTotalPower } from '../Util';
 
 interface Props {
     onShowBlockForCoin: Function
@@ -15,64 +17,19 @@ export default class Rack extends React.Component<Props> {
     state = { 
         placingEquipment: false, 
         showBuildOptions: false,
-        equipmentBuilder: EmptyEquipment
-    }
-
-    showEquipmentInfo = (equipment:Equipment) => {
-
+        showEquipmentInfo: false,
+        showBuyPower: false,
+        rackSpace: 0
     }
 
     getEquipmentStyle = (equipment:Equipment) => {
-        return styles.emptyBaseTile
+        return {
+            backgroundImage: 'url('+equipment.sprite+')',
+            ...AppStyles.equipment,
+            margin:'2px',
+            border: '1px dotted'
+        }
     }
-
-    placeEquipment = (tile:RackTile) => {
-
-    }
-
-    getBuildOptions = () => 
-        <div style={{...AppStyles.disabled, pointerEvents:'all', display: 'flex'}}>
-            <div style={AppStyles.notification}>
-                <div style={{marginBottom:'0.5em', whiteSpace:'pre-wrap'}}>
-                    <h3 style={{marginBottom:'1em'}}>Configure New Equipment</h3>
-                    <div style={{display:'flex', alignItems:'center', justifyContent:'space-around'}}>
-                        <div style={{...styles.equipment, backgroundImage: 'url('+this.state.equipmentBuilder.sprite+')'}}/>
-                        <div>
-                            <h4>lvl {this.state.equipmentBuilder.level} {this.state.equipmentBuilder.coinName} {this.state.equipmentBuilder.type}</h4>
-                            <div style={{display:'flex', alignItems:'baseline', justifyContent:'space-between'}}>
-                                <h5>cost</h5>
-                                <div>{this.state.equipmentBuilder.buildCost}</div>
-                                <h5>power</h5>
-                                <div>{this.state.equipmentBuilder.powerCost}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <h4>Type</h4>
-                        <select value={this.state.equipmentBuilder.type} style={{width:'5em'}}
-                                onChange={(e)=>this.setState({equipmentBuilder: {...this.state.equipmentBuilder, type: e.currentTarget.value, coinName:null, sprite: (EquipmentSprite as any)[e.currentTarget.value]}})}>
-                            {Object.keys(EquipmentType).map(type=><option value={type}>{type}</option>)}
-                        </select>
-                    </div>
-                    {(this.state.equipmentBuilder.type === EquipmentType.Miner || this.state.equipmentBuilder.type === EquipmentType.Storage) &&
-                        <div>
-                            <h5>Coin Type</h5>
-                            <select style={{width:'5em'}} defaultValue={null} value={this.state.equipmentBuilder.coinName} onChange={(e)=>this.setState({equipmentBuilder: {...this.state.equipmentBuilder, coinName: e.currentTarget.value}})}>
-                                <option value={null}>Select...</option>
-                                {this.props.coins.map(coin=><option value={coin.name}>{coin.name}</option>)}
-                            </select>
-                        </div>
-                    }
-                    <div>
-                        <h5>Level</h5>
-                        <input type="number" style={{width:'2em'}} 
-                               min={1} value={this.state.equipmentBuilder.level} 
-                               onChange={(e)=>this.setState({equipmentBuilder: {...this.state.equipmentBuilder, level: e.currentTarget.value, powerCost: +e.currentTarget.value*3, buildCost: +e.currentTarget.value*10}})}/>
-                    </div>
-                </div>
-                {Button(true, ()=>this.setState({showBuildOptions:false}), 'Done')}
-            </div>
-        </div>  
 
     render(){
         return (
@@ -83,6 +40,7 @@ export default class Rack extends React.Component<Props> {
                         <div style={{width:'4em'}}>Symbol</div>
                         <div style={{width:'4em'}}>Amt</div>
                         <div style={{width:'4em'}}>Val</div>
+                        <div style={{width:'4em'}}>Hash Rate</div>
                     </div>
                     {this.props.me.wallet.map(coinHolding=>{
                         let coin = this.props.coins.find(coin=>coin.name===coinHolding.name)
@@ -93,6 +51,7 @@ export default class Rack extends React.Component<Props> {
                                 </div>
                                 <div style={{width:'4em'}}>{coinHolding.amount}</div>
                                 <div style={{width:'4em'}}>{coin.value}</div>
+                                <div>{getHashRate(this.props.me.rack, coin.name)}</div>
                                 {LightButton(true, ()=>onBuyCoin(coin), 'Buy')}
                                 {LightButton(true, ()=>onSellCoin(coin), 'Sell')}
                                 {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
@@ -101,23 +60,55 @@ export default class Rack extends React.Component<Props> {
                     })}
                 </div>
                 <div>
-                    building options or selected building info here
+                    <h4>My Rack</h4>
+                    <div style={{display:'flex'}}>
+                        <h4>Power</h4>
+                        <div>{this.props.me.power} (-{getTotalPower(this.props.me.rack)})</div>
+                        {LightButton(true, ()=>this.setState({showBuyPower: true}), 'Buy')}
+                    </div>
+                    <div style={{padding:'0.5em', maxWidth:'25em', display:'flex', justifyContent:'center'}}>
+                        {this.props.me.rack.map((rackTile:RackTile, i)=>
+                                    rackTile.equipment ? 
+                                        <div onClick={()=>this.setState({showEquipmentInfo: rackTile.equipment})} 
+                                            style={this.getEquipmentStyle(rackTile.equipment)} 
+                                        /> :
+                                        <div onClick={()=>this.setState({showBuildOptions:true, rackSpace: i})} 
+                                            style={styles.emptyBaseTile}/>
+                        )}
+                    </div>
                 </div>
-                <div style={{padding:'0.5em', maxWidth:'25em', display:'flex', justifyContent:'center'}}>
-                    {this.props.me.rack.map((rackTile:RackTile)=>
-                                rackTile.equipment ? 
-                                    <div onClick={()=>this.showEquipmentInfo(rackTile.equipment)} 
-                                         style={this.getEquipmentStyle(rackTile.equipment)} 
-                                    /> :
-                                    <div onClick={this.state.placingEquipment ? 
-                                            ()=>this.placeEquipment(rackTile) : ()=>this.setState({showBuildOptions:true})} 
-                                         style={styles.emptyBaseTile}/>
-                    )}
-                </div>
-                {this.state.showBuildOptions && this.getBuildOptions()}
+                {this.state.showBuildOptions && 
+                    <EquipmentBuilder hide={()=>this.setState({showBuildOptions:false})} 
+                                      me={this.props.me}
+                                      rackSpace={this.state.rackSpace}
+                                      coins={this.props.coins}/>
+                }
+                {this.state.showBuyPower && 
+                    <PowerStore me={this.props.me}
+                                coins={this.props.coins}
+                                hide={()=>this.setState({showBuyPower:false})}/>
+                }
+                {this.state.showEquipmentInfo && 
+                    <div style={{...AppStyles.disabled, display: 'flex'}}>
+                        <div style={AppStyles.notification}>
+                            <div style={{marginBottom:'0.5em', whiteSpace:'pre-wrap'}}>
+                                
+                            </div>
+                            {Button(true, ()=>this.setState({showEquipmentInfo:false}), 'Done')}
+                        </div>
+                    </div>  
+                }
          </div>
         )
     }
+}
+
+const getHashRate = (rack:Array<RackTile>, coinName:string) => {
+    let rate = 0
+    rack.forEach(space=>{
+        if(space.equipment && space.equipment.coinName===coinName && space.equipment.isEnabled) rate+=space.equipment.level
+    })
+    return rate
 }
 
 const styles = {
@@ -127,12 +118,7 @@ const styles = {
         height:'1.5em',
         width:'1.5em',
         margin:'2px',
-        border: '1px dotted'
-    },
-    equipment: {
-        height:'2em', width:'2em',
-        backgroundRepeat:'no-repeat',
-        backgroundPosition:'center',
-        backgroundSize:'contain'
+        border: '1px dotted',
+        cursor:'pointer'
     }
 }
