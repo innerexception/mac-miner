@@ -42,11 +42,11 @@ module.exports = {
                 use: [{
                     loader: 'file-loader',
                     options: {
-                      outputPath: './',
+                      outputPath: './assets',
                     },
                   }]
             },
-            { test: /\.(woff|woff2|eot|ttf|svg)$/, use: ['url-loader?limit=100000'] },
+            { test: /\.(woff|woff2|eot|ttf)$/, use: ['url-loader?limit=100000'] },
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,

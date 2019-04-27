@@ -1,13 +1,9 @@
 declare enum EquipmentType {
-    Pipe='Pipe',
-    Miner1='Miner1',
-    Storage1='Storage1',
-    Miner2='Miner2',
-    Storage2='Storage2',
+    Miner='Miner',
+    Storage='Storage',
     Solar='Solar',
-    Battery1='Battery1',
-    Battery2='Battery2',
-    ColdStorage='ColdStorage'
+    Battery='Battery',
+    CStorage='CStorage'
 }
 
 declare enum PassiveType {
@@ -50,7 +46,6 @@ interface Equipment {
     buildCost: number
     sprite: string
     type: EquipmentType
-    name:string
     coinName: string
     level: number
 }

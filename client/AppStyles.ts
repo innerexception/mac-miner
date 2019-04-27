@@ -60,4 +60,9 @@ export default {
         margin:0,
         marginBottom:'1px'
     },
+    disabled: {
+        pointerEvents: 'none' as 'none',
+        alignItems:'center', justifyContent:'center', 
+        position:'absolute' as 'absolute', top:0, left:0, width:'100%', height:'100%'
+    },
 }

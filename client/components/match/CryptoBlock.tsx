@@ -41,7 +41,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
     }
 
     getNotification = () => 
-        <div style={{...styles.disabled, display: 'flex'}}>
+        <div style={{...AppStyles.disabled, display: 'flex'}}>
             <div style={AppStyles.notification}>
                 <div style={{marginBottom:'0.5em', whiteSpace:'pre-wrap'}}>
                     {this.state.showMessage}
@@ -76,7 +76,7 @@ export default class CryptoBlock extends React.Component<Props, State> {
                             </div>
                             <div>Current difficulty: {this.props.coin.difficulty}</div>
                             <div>My fragments: {this.props.me.wallet.find(holding=>holding.name===this.props.coin.name).currentFragments}</div>
-                            {LightButton(true, this.props.onShowBase, 'Home')}
+                            {LightButton(true, this.props.onShowBase, 'Go Back')}
                         </div>
                         <div style={{height:'20vh', overflowY:'auto', width:'50%'}}>
                             {this.state.messages.map(message=><div>{message}</div>)}
@@ -112,11 +112,6 @@ export default class CryptoBlock extends React.Component<Props, State> {
 }
 
 const styles = {
-    disabled: {
-        pointerEvents: 'none' as 'none',
-        alignItems:'center', justifyContent:'center', 
-        position:'absolute' as 'absolute', top:0, left:0, width:'100%', height:'100%'
-    },
     mapFrame: {
         position:'relative' as 'relative',
         backgroundImage: 'url('+require('../../assets/whiteTile.png')+')',
