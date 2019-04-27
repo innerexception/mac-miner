@@ -39,15 +39,15 @@ export default class CryptoBlock extends React.Component<Props, State> {
             </div>
         </div>  
 
-    getSetForTile = () => {
+    getSetForTile = () => 
         //TODO: 
         //set field size and # of sets increases with difficulty
         //base is 3x3 with 1 set, scaled by difficulty
         //set categories: color, texture, shape, number
-        <Set sets={3+this.props.coin.difficulty}
+        <Set sets={this.props.coin.difficulty}
              onSolved={this.onSolved}
-             dimension={3+this.props.coin.difficulty}/>
-    }
+             dimension={2+this.props.coin.difficulty}/>
+    
 
     mineBlock = (tile:CryptoTile) => {
         onMineBlock(tile.x, tile.y, this.props.coin, this.props.me, this.props.activeSession)

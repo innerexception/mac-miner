@@ -11,7 +11,7 @@ export default class Login extends React.Component {
                 {TopBar('Welcome')}
                 <div style={{padding:'0.5em'}}>
                     <h3 style={{margin:'0'}}>MacMiner</h3>
-                    {Button(true, ()=>onMatchStart(getUser()), 'Start')}
+                    {Button(true, ()=>onMatchStart(getUser(), getInitialCoin()), 'Start')}
                 </div>
             </div>
         )
@@ -23,7 +23,7 @@ const getUser = () => {
        id: Date.now() + ''+ Math.random(),
        rack: getEmptyRack(),
        power: 0,
-       wallet: getInitialCoin(),
+       wallet: new Array<CoinHolding>(),
        passives: new Array<Passive>()
     }
 }
@@ -31,16 +31,14 @@ const getUser = () => {
 const getInitialCoin = () => {
     let amount = getRandomInt(1000)
     let value = Math.round(amount / 100)
-    return [{
+    return {
         name: getRandomCoinName(),
         rune: getRandomCoinRune(),
         value,
         difficulty: 1,
         circulation: amount*getRandomInt(20),
-        amount,
-        activeBlock: getFreshCoinBlock(),
-        currentFragments: 0
-    }]
+        activeBlock: getFreshCoinBlock()
+    }
 }
 
 const getEmptyRack = () => 

@@ -2,11 +2,17 @@ import { dispatch } from '../../../client/App'
 import { ReducerActions } from '../../../enum'
 import { getFreshCoinBlock, getRandomInt } from '../Util';
 
-export const onMatchStart = (currentUser:Player) => {
+export const onMatchStart = (currentUser:Player, coin:Coin) => {
+    currentUser.wallet = [{
+        name: coin.name,
+        amount: Math.round(coin.value*100),
+        currentFragments: 0
+    }]
     dispatch({
         type: ReducerActions.SET_USER,
         session: {
-            players: [currentUser]
+            players: [currentUser],
+            coins: [coin]
         },
         currentUser
     })
@@ -14,7 +20,7 @@ export const onMatchStart = (currentUser:Player) => {
 }
 
 export const onMineBlock = (x:number, y:number, gcoin:Coin, miner:Player, session:Session) => {
-    let holding = miner.wallet.find(holding=>holding.name === coin.name)
+    let holding = miner.wallet.find(holding=>holding.name === gcoin.name)
     let { coin, players } = mineCoin(x,y,miner.id,holding,gcoin,session.players)
 
     dispatch({
@@ -93,11 +99,13 @@ const mineCoin = (x:number, y:number, playerId:string, holding:CoinHolding, coin
         if(miningEquipment){
             miningEquipment.forEach(equipment=>{
                 holding.currentFragments += (equipment.level / coin.difficulty)/10
+                tile.isMined = true
             })
         }
-        else
+        else{
             holding.currentFragments+=0.1
-        tile.isMined = true
+            tile.isMined = true
+        }
         if(holding.currentFragments >= 1){
             //Close out the block
             holding.amount++

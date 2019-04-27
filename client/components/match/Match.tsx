@@ -4,7 +4,6 @@ import CryptoBlock from './CryptoBlock'
 import Base from './Base'
 import { TopBar, Button } from '../Shared'
 import { onMatchTick } from '../uiManager/Thunks'
-import { getFreshCoinBlock } from '../Util';
 
 interface Props {
     currentUser: Player
