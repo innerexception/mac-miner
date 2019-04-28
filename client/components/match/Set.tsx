@@ -118,7 +118,6 @@ const getInitialCards = (dimension:number) => {
             isSelected: false
         }
     })
-    //TODO: set correct number of correct sets for difficulty, then shuffle?
     return cards
 }
 

@@ -16,7 +16,6 @@ export const onMatchStart = (currentUser:Player, coin:Coin) => {
         },
         currentUser
     })
-    //TODO: add AI miners here
 }
 
 export const onMineBlock = (x:number, y:number, gcoin:Coin, miner:Player, session:Session) => {
@@ -33,6 +32,9 @@ export const onMineBlock = (x:number, y:number, gcoin:Coin, miner:Player, sessio
 export const onMatchTick = (session:Session) => {
     //TODO
     //5. check for global event trigger
+    //
+    //6. chance to discover new coin (trigger ICO)
+    //7. chance to spawn a new AI miner
     
     let outPlayers, outCoins
     session.players.forEach(player=>{
@@ -140,8 +142,11 @@ const mineCoin = (x:number, y:number, playerId:string, holding:CoinHolding, coin
     }
 }
 
-export const onBuildEquipment = (player:Player, equipment:Equipment, rackSpace:number) => {
+export const onBuildEquipment = (player:Player, payCoin:Coin, price:number, equipment:Equipment, rackSpace:number) => {
     player.rack[rackSpace].equipment = equipment
+    player.wallet.forEach(holding=>{
+        if(holding.name === payCoin.name) holding.amount -= price
+    })
     dispatch({
         type: ReducerActions.PLAYER_UPDATE,
         player
@@ -171,18 +176,12 @@ export const onPurchasePassive = (passive:Passive) => {
 
 }
 
-export const onSellCoin = (coin:Coin) => {
+export const onSellCoin = (coin:Coin, amount:number) => {
     //TODO: value decreases
 }
 
-export const onBuyCoin = (coin:Coin) => {
+export const onBuyCoin = (coin:Coin, amount:number) => {
     //TODO: value increases
-}
-
-export const onClearTile = (tile:CryptoTile) => {
-    //TODO: chance to discover new coin (trigger ICO)
-    //TODO: clearing requires equipment in some cases
-    //TODO: tile may have affinity for a coin type
 }
 
 export const onCleanSession = () => {

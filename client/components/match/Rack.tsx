@@ -4,6 +4,7 @@ import { TopBar, Button, LightButton } from '../Shared'
 import { onBuyCoin, onSellCoin } from '../uiManager/Thunks'
 import EquipmentBuilder from './EquipmentBuilder'
 import PowerStore from './PowerStore'
+import CoinShop from './CoinShop'
 import { getTotalPower } from '../Util';
 
 interface Props {
@@ -12,14 +13,22 @@ interface Props {
     me: Player
 }
 
-export default class Rack extends React.Component<Props> {
+interface State {
+    showBuildOptions: boolean
+    showEquipmentInfo: Equipment | boolean
+    showBuyPower: boolean
+    rackSpace: number
+    showCoinShop: Coin | boolean
+}
+
+export default class Rack extends React.Component<Props, State> {
 
     state = { 
-        placingEquipment: false, 
         showBuildOptions: false,
         showEquipmentInfo: false,
         showBuyPower: false,
-        rackSpace: 0
+        rackSpace: 0,
+        showCoinShop: false
     }
 
     getEquipmentStyle = (equipment:Equipment) => {
@@ -31,7 +40,10 @@ export default class Rack extends React.Component<Props> {
         }
     }
 
+    hasValidMiner = (coin:Coin) => this.props.me.rack.find(rackSpace=>rackSpace.equipment && rackSpace.equipment.coinName === coin.name && rackSpace.equipment.level >= coin.difficulty) ? true : false
+    
     render(){
+        let ownedCoins = this.props.coins.filter(coin=>this.props.me.wallet.find(wcoin=>wcoin.name===coin.name))
         return (
             <div style={AppStyles.window}>
                 <div>
@@ -51,9 +63,8 @@ export default class Rack extends React.Component<Props> {
                                 </div>
                                 <div style={{width:'4em'}}>{coinHolding.amount}</div>
                                 <div style={{width:'4em'}}>{coin.value}</div>
-                                <div>{getHashRate(this.props.me.rack, coin.name)}</div>
-                                {LightButton(true, ()=>onBuyCoin(coin), 'Buy')}
-                                {LightButton(true, ()=>onSellCoin(coin), 'Sell')}
+                                <div>{getHashRate(this.props.me.rack, coin.name)} {this.hasValidMiner(coin) && <div title={'Miner for this coin is missing or underlevel. Mining will be slow or non-existent.'}>!</div>}</div>
+                                {LightButton(true, ()=>this.setState({showCoinShop: true}), 'Trade')}
                                 {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
                             </div>
                         )
@@ -81,11 +92,11 @@ export default class Rack extends React.Component<Props> {
                     <EquipmentBuilder hide={()=>this.setState({showBuildOptions:false})} 
                                       me={this.props.me}
                                       rackSpace={this.state.rackSpace}
-                                      coins={this.props.coins}/>
+                                      ownedCoins={ownedCoins}/>
                 }
                 {this.state.showBuyPower && 
                     <PowerStore me={this.props.me}
-                                coins={this.props.coins}
+                                ownedCoins={ownedCoins}
                                 hide={()=>this.setState({showBuyPower:false})}/>
                 }
                 {this.state.showEquipmentInfo && 
@@ -97,6 +108,12 @@ export default class Rack extends React.Component<Props> {
                             {Button(true, ()=>this.setState({showEquipmentInfo:false}), 'Done')}
                         </div>
                     </div>  
+                }
+                {this.state.showCoinShop &&
+                    <CoinShop holding={this.props.me.wallet.find(holding=>holding.name===(this.state.showCoinShop as any).name)}
+                              ownedCoins={ownedCoins}
+                              hide={()=>this.setState({showCoinShop:false})}
+                              coin={(this.state.showCoinShop as any) as Coin}/>
                 }
          </div>
         )

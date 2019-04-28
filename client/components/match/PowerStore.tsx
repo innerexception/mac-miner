@@ -6,7 +6,7 @@ import { getTotalPower } from '../Util';
 
 interface Props {
     hide: Function
-    coins: Array<Coin>
+    ownedCoins: Array<Coin>
     me: Player
 }
 
@@ -39,24 +39,24 @@ export default class EquipmentBuilder extends React.Component<Props> {
                             <div>
                                 <h5>Pay with coin:</h5>
                                 <select style={{width:'5em'}} defaultValue={null} value={this.state.coinName} 
-                                        onChange={(e)=>this.setState({...this.state, coinName: e.currentTarget.value, price:getPowerPrice(this.state.power, e.currentTarget.value, this.props.coins)})}>
+                                        onChange={(e)=>this.setState({...this.state, coinName: e.currentTarget.value, price:getPowerPrice(this.state.power, e.currentTarget.value, this.props.ownedCoins)})}>
                                     <option value={null}>Select...</option>
-                                    {this.props.coins.map(coin=><option value={coin.name}>{coin.name}</option>)}
+                                    {this.props.ownedCoins.map(coin=><option value={coin.name}>{coin.name}</option>)}
                                 </select>
                             </div>
                             <div>
                                 <h5>Kwh:</h5>
                                 <input type="number" style={{width:'2em'}} 
                                     min={1} value={this.state.power} 
-                                    onChange={(e)=>this.setState({power: e.currentTarget.value, price: getPowerPrice(this.state.power, this.state.coinName, this.props.coins)})}/>
+                                    onChange={(e)=>this.setState({power: e.currentTarget.value, price: getPowerPrice(this.state.power, this.state.coinName, this.props.ownedCoins)})}/>
                             </div>
                             <div>
-                                <h4>Total cost: {this.state.price}</h4>
+                                <h4>Total cost: {this.state.price} {this.state.coinName}</h4>
                             </div>
                         </div>
                         <div style={{display:'flex', justifyContent:'flex-end', alignItems:'center'}}>
                             {LightButton(true, this.props.hide, 'Cancel')}
-                            {Button(this.hasCoinAmt(), ()=>{onBuyPower(this.props.me, this.state.power, getPowerPrice(this.state.power, this.state.coinName, this.props.coins), this.state.coinName);this.props.hide();}, 'Buy')}
+                            {Button(this.hasCoinAmt(), ()=>{onBuyPower(this.props.me, this.state.power, getPowerPrice(this.state.power, this.state.coinName, this.props.ownedCoins), this.state.coinName);this.props.hide();}, 'Buy')}
                         </div>
                     </div>
                 </div>
