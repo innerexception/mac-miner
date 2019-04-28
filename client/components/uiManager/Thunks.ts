@@ -31,8 +31,7 @@ export const onMineBlock = (x:number, y:number, gcoin:Coin, miner:Player, sessio
 
 export const onMatchTick = (session:Session) => {
     //TODO
-    //5. check for global event trigger
-    //
+    //5. check for global events to trigger
     //6. chance to discover new coin (trigger ICO)
     //7. chance to spawn a new AI miner
     
@@ -176,12 +175,8 @@ export const onPurchasePassive = (passive:Passive) => {
 
 }
 
-export const onSellCoin = (coin:Coin, amount:number) => {
-    //TODO: value decreases
-}
-
-export const onBuyCoin = (coin:Coin, amount:number) => {
-    //TODO: value increases
+export const onConvertCoin = (player:Player, sourceCoin:Coin, amount:number, targetCoin:Coin) => {
+    //TODO: value decreases/increases
 }
 
 export const onCleanSession = () => {

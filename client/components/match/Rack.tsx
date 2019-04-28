@@ -1,10 +1,9 @@
 import * as React from 'react'
 import AppStyles from '../../AppStyles';
 import { TopBar, Button, LightButton } from '../Shared'
-import { onBuyCoin, onSellCoin } from '../uiManager/Thunks'
 import EquipmentBuilder from './EquipmentBuilder'
 import PowerStore from './PowerStore'
-import CoinShop from './CoinShop'
+import CoinConverter from './CoinConverter'
 import { getTotalPower } from '../Util';
 
 interface Props {
@@ -110,10 +109,11 @@ export default class Rack extends React.Component<Props, State> {
                     </div>  
                 }
                 {this.state.showCoinShop &&
-                    <CoinShop holding={this.props.me.wallet.find(holding=>holding.name===(this.state.showCoinShop as any).name)}
-                              ownedCoins={ownedCoins}
-                              hide={()=>this.setState({showCoinShop:false})}
-                              coin={(this.state.showCoinShop as any) as Coin}/>
+                    <CoinConverter  holding={this.props.me.wallet.find(holding=>holding.name===(this.state.showCoinShop as any).name)}
+                                    ownedCoins={ownedCoins}
+                                    me={this.props.me}
+                                    hide={()=>this.setState({showCoinShop:false})}
+                                    coin={(this.state.showCoinShop as any) as Coin}/>
                 }
          </div>
         )
