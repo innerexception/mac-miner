@@ -175,8 +175,16 @@ export const onPurchasePassive = (passive:Passive) => {
 
 }
 
-export const onConvertCoin = (player:Player, sourceCoin:Coin, amount:number, targetCoin:Coin) => {
+export const onConvertCoin = (player:Player, sourceCoin:Coin, amount:number, targetCoin:Coin, price:number) => {
     //TODO: value decreases/increases
+    player.wallet.forEach(holding=>{
+        if(holding.name === sourceCoin.name) holding.amount-=price
+        if(holding.name === targetCoin.name) holding.amount+=amount
+    })
+    dispatch({
+        type: ReducerActions.PLAYER_UPDATE,
+        player
+    })
 }
 
 export const onCleanSession = () => {

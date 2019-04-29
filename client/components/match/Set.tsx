@@ -101,8 +101,9 @@ export default class Set extends React.Component<Props, State> {
                         )}
                     </div>
                 </div>
+                <h4>Select sets of three to solve. {this.props.sets} sets of 3 required</h4>
                 {Button(true, this.onTrySolve, 'Solve')}
-         </div>
+            </div>
         )
     }
 }

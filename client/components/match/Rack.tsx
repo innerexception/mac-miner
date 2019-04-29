@@ -17,7 +17,7 @@ interface State {
     showEquipmentInfo: Equipment | boolean
     showBuyPower: boolean
     rackSpace: number
-    showCoinShop: Coin | boolean
+    showCoinShop: Coin
 }
 
 export default class Rack extends React.Component<Props, State> {
@@ -27,7 +27,7 @@ export default class Rack extends React.Component<Props, State> {
         showEquipmentInfo: false,
         showBuyPower: false,
         rackSpace: 0,
-        showCoinShop: false
+        showCoinShop: null as null
     }
 
     getEquipmentStyle = (equipment:Equipment) => {
@@ -39,7 +39,7 @@ export default class Rack extends React.Component<Props, State> {
         }
     }
 
-    hasValidMiner = (coin:Coin) => this.props.me.rack.find(rackSpace=>rackSpace.equipment && rackSpace.equipment.coinName === coin.name && rackSpace.equipment.level >= coin.difficulty) ? true : false
+    hasValidMiner = (coin:Coin) => this.props.me.rack.find(rackSpace=>rackSpace.equipment && rackSpace.equipment.isEnabled && rackSpace.equipment.coinName === coin.name && rackSpace.equipment.level >= coin.difficulty) ? true : false
     
     render(){
         let ownedCoins = this.props.coins.filter(coin=>this.props.me.wallet.find(wcoin=>wcoin.name===coin.name))
@@ -62,8 +62,8 @@ export default class Rack extends React.Component<Props, State> {
                                 </div>
                                 <div style={{width:'4em'}}>{coinHolding.amount}</div>
                                 <div style={{width:'4em'}}>{coin.value}</div>
-                                <div>{getHashRate(this.props.me.rack, coin.name)} {this.hasValidMiner(coin) && <div title={'Miner for this coin is missing or underlevel. Mining will be slow or non-existent.'}>!</div>}</div>
-                                {LightButton(true, ()=>this.setState({showCoinShop: true}), 'Trade')}
+                                <div>{getHashRate(this.props.me.rack, coin.name)} {!this.hasValidMiner(coin) && <div title={'Miner for this coin is missing or underlevel. Mining will be slow or non-existent.'}>!</div>}</div>
+                                {LightButton(true, ()=>this.setState({showCoinShop: coin}), 'Trade')}
                                 {LightButton(true, ()=>this.props.onShowBlockForCoin(coin), 'Mine')}
                             </div>
                         )
@@ -109,11 +109,10 @@ export default class Rack extends React.Component<Props, State> {
                     </div>  
                 }
                 {this.state.showCoinShop &&
-                    <CoinConverter  holding={this.props.me.wallet.find(holding=>holding.name===(this.state.showCoinShop as any).name)}
-                                    ownedCoins={ownedCoins}
+                    <CoinConverter  ownedCoins={ownedCoins}
                                     me={this.props.me}
-                                    hide={()=>this.setState({showCoinShop:false})}
-                                    coin={(this.state.showCoinShop as any) as Coin}/>
+                                    hide={()=>this.setState({showCoinShop:null})}
+                                    coin={this.state.showCoinShop}/>
                 }
          </div>
         )
@@ -123,7 +122,8 @@ export default class Rack extends React.Component<Props, State> {
 const getHashRate = (rack:Array<RackTile>, coinName:string) => {
     let rate = 0
     rack.forEach(space=>{
-        if(space.equipment && space.equipment.coinName===coinName && space.equipment.isEnabled) rate+=space.equipment.level
+        if(space.equipment && space.equipment.coinName===coinName && space.equipment.isEnabled) 
+            rate+=space.equipment.level
     })
     return rate
 }

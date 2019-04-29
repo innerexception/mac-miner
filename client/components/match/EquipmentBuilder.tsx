@@ -20,7 +20,6 @@ export default class EquipmentBuilder extends React.Component<Props> {
     render(){
         return (
             <div style={{...AppStyles.disabled, pointerEvents:'all', display: 'flex'}}>
-                
                 <div style={{padding:'0.5em', maxWidth:'25em'}}>
                     {TopBar('Equipment')}
                     <div style={{...AppStyles.notification, borderRadius:0, borderTop:'none'}}>
